@@ -1,64 +1,56 @@
 'use client';
-import { sendTextToOpenAi } from '@/utils/sendTextToOpenAi';
-import React, { FormEvent, useCallback, useState } from 'react';
+import React, { FormEvent, useContext, useEffect, useState } from 'react';
+import { AppContext } from '../context/isPlayingContext';
 
-const TextToSpeecH = () => {
-  const [userText, setUserText] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const TextToSpeech = () => {
+	const [userText, setUserText] = useState("");
+	const { isPlaying, setIsPlaying } = useContext(AppContext);
+	const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
+	const voices = synth?.getVoices();
+		
+	const seletedVoice = voices?.find((voice) => voice.name === "Google US English");
 
-  const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
-  const voice = synth?.getVoices();
+	const speak = (textToSpeak: string) => {
+		let utterance = new SpeechSynthesisUtterance(textToSpeak);
+		utterance.voice = seletedVoice!;
 
-  const selectedVoice = voice?.find((voice) => voice.name === 'Albert');
+		synth?.speak(utterance);
+		setIsPlaying(true);
+		utterance.onend = () => {
+			setIsPlaying(false);
+		};
+	};
 
-  const speak = useCallback(
-    (textToSpeak: string) => {
-      setIsLoading(true);
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-        utterance.rate = 0.4;
-      }
-      synth?.speak(utterance);
-      utterance.onend = () => {
-        setIsLoading(false);
-      };
-    },
-    [selectedVoice, synth],
-  );
-
-  const handleSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      speak(userText ? userText : 'Please enter text');
-    },
-    [speak, userText],
-  );
-
-  const handleUserText = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const message = await sendTextToOpenAi(userText);
-      speak(message);
-    } catch (err) {
-      let message = '';
-      if (err instanceof Error) message = err.message;
-      console.log('err', message);
-    } finally {
-      setIsLoading(false);
-      setUserText('');
-    }
-  };
+	const handleUserText = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (userText === "") return alert("Please enter text");
+		speak(userText);
+	}
 
   return (
-    <form onChange={handleUserText} className='flex flex-row items-center justify-center gap-4' onSubmit={handleSubmit}>
-      <input value={userText} name='userText' type='text' className='bg-transparent max-w-lg w-full rounded-md border border-green-500 p-2' placeholder='What do you want to know human?' />
-      <button disabled={isLoading} type='submit' className='bg-orange-900 w-1/5 rounded-md p-2'>
-        {isLoading ? 'Processing' : 'Ask'}
+    <div className="relative top-0 z-50">
+    <form
+      onSubmit={handleUserText}
+      className="absolute top-[800px] left-[30%] space-x-2 pt-2"
+    >
+      <input
+        type="text"
+        value={userText}
+        className="bg-transparent w-[510px] border border-[#b00c3f]/80 outline-none  rounded-lg placeholder:text-[#b00c3f] p-2 text-[#b00c3f]"
+        onChange={(e) => setUserText(e.target.value)}
+        placeholder="What do you want me to say?"
+      />
+      <button
+        disabled={isPlaying}
+		type='submit'
+        className="text-[#b00c3f] p-2 border border-[#b00c3f] rounded-lg disabled:text-blue-100 
+        disabled:cursor-not-allowed disabled:bg-gray-500 hover:scale-110 hover:bg-[#b00c3f] hover:text-black duration-300 transition-all"
+      >
+        {isPlaying ? "thinking..." : "Speak"}
       </button>
     </form>
+  </div>
   );
 };
 
-export default TextToSpeecH;
+export default TextToSpeech;
