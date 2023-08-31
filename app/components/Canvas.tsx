@@ -43,11 +43,11 @@ const Torch = ({ vec = new Vector3(), ...props }) => {
 };
 
 const Head = () => {
-	const { isPlaying, setIsPlaying } = useContext(AppContext);
+	const { isPlaying } = useContext(AppContext);
 	const model = useGLTF("/head.glb");
 	const animations = useAnimations(model.animations, model.scene);
 	const action = animations.actions.Animation;
-	const depthBuffer = useDepthBuffer({ frames: 1, size: 0 });
+	// const depthBuffer = useDepthBuffer({ frames: 1, size: 0 });
 	useEffect(() => {
 		if (isPlaying) {
 			action?.play();
@@ -63,12 +63,12 @@ const Head = () => {
 		<>
 			<primitive object={model.scene} scale={3} rotation-z={0.2} />
 			<Torch
-				depthBuffer={depthBuffer}
+				// depthBuffer={depthBuffer}
 				color="blue"
 				position={[3, 2, 2]}
 			/>
 			<Torch
-				depthBuffer={depthBuffer}
+				// depthBuffer={depthBuffer}
 				color="#b00c3f"
 				position={[-3, 2, 2]}
 			/>
@@ -83,8 +83,8 @@ export const HeadCanvas = () => {
 				enableZoom={false}
 				enableDamping
 				maxPolarAngle={2}
-				minAzimuthAngle={-Math.PI * 0.5 / 2}
-				maxAzimuthAngle={Math.PI * 0.5 / 2}
+				minAzimuthAngle={-Math.PI * 0.5}
+				maxAzimuthAngle={Math.PI * 0.5}
 			/>
 			<color attach="background" args={["black"]} />
 			<ambientLight intensity={0.3} />

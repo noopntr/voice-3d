@@ -15,7 +15,7 @@ const TextToSpeech = () => {
 		utterance.voice = seletedVoice!;
 
 		synth?.speak(utterance);
-		setIsPlaying(true);
+		setIsPlaying(true);    
 		utterance.onend = () => {
 			setIsPlaying(false);
 		};
@@ -46,7 +46,7 @@ const TextToSpeech = () => {
         className="text-[#b00c3f] p-2 border border-[#b00c3f] rounded-lg disabled:text-blue-100 
         disabled:cursor-not-allowed disabled:bg-gray-500 hover:scale-110 hover:bg-[#b00c3f] hover:text-black duration-300 transition-all"
       >
-        {isPlaying ? "thinking..." : "Speak"}
+        {isPlaying ? "Speaking..." : "Speak"}
       </button>
     </form>
   </div>
