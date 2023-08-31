@@ -1,7 +1,6 @@
 "use client";
 import { AppContext } from "../context/isPlayingContext";
 import {
-	Environment,
 	Html,
 	Loader,
 	OrbitControls,
@@ -33,7 +32,7 @@ const Torch = ({ vec = new Vector3(), ...props }) => {
 			castShadow
 			ref={light}
 			penumbra={1}
-			distance={10}
+			distance={5}
 			angle={0.35}
 			attenuation={5}
 			anglePower={4}
@@ -48,7 +47,7 @@ const Head = () => {
 	const model = useGLTF("/head.glb");
 	const animations = useAnimations(model.animations, model.scene);
 	const action = animations.actions.Animation;
-	const depthBuffer = useDepthBuffer({ frames: 1 });
+	const depthBuffer = useDepthBuffer({ frames: 1, size: 0 });
 	useEffect(() => {
 		if (isPlaying) {
 			action?.play();
@@ -71,7 +70,7 @@ const Head = () => {
 			<Torch
 				depthBuffer={depthBuffer}
 				color="#b00c3f"
-				position={[1, 2, 2]}
+				position={[-3, 2, 2]}
 			/>
 		</>
 	);
@@ -84,11 +83,11 @@ export const HeadCanvas = () => {
 				enableZoom={false}
 				enableDamping
 				maxPolarAngle={2}
-				minAzimuthAngle={-Math.PI * 0.5}
-				maxAzimuthAngle={Math.PI * 0.5}
+				minAzimuthAngle={-Math.PI * 0.5 / 2}
+				maxAzimuthAngle={Math.PI * 0.5 / 2}
 			/>
 			<color attach="background" args={["black"]} />
-			<ambientLight intensity={0.015} />
+			<ambientLight intensity={0.3} />
 			<Suspense
 				fallback={
 					<Html>

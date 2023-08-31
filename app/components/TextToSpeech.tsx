@@ -28,15 +28,15 @@ const TextToSpeech = () => {
 	}
 
   return (
-    <div className="relative top-0 z-50">
+    <div className="absolute bottom-9 left-1/2 transform -translate-x-1/2 mx-auto z-50">
     <form
       onSubmit={handleUserText}
-      className="absolute top-[800px] left-[30%] space-x-2 pt-2"
+      className="space-x-2 pt-2 w-min flex flex-row"
     >
       <input
         type="text"
         value={userText}
-        className="bg-transparent w-[510px] border border-[#b00c3f]/80 outline-none  rounded-lg placeholder:text-[#b00c3f] p-2 text-[#b00c3f]"
+        className="bg-transparent sm:max-w-[510px] max-w-[230px] border border-[#b00c3f]/80 outline-none  rounded-lg placeholder:text-[#b00c3f] p-2 text-[#b00c3f]"
         onChange={(e) => setUserText(e.target.value)}
         placeholder="What do you want me to say?"
       />
